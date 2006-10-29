@@ -4,8 +4,6 @@ module ActiveRecord
       base.extend ClassMethods
       base.send(:include, InstanceMethods)
       
-      base.write_inheritable_array(:attribute_defaults, [])
-      
       base.send :alias_method, :initialize_without_defaults, :initialize
       base.send :alias_method, :initialize, :initialize_with_defaults
     end
@@ -57,9 +55,11 @@ module ActiveRecord
         
         attribute_keys = (attributes || {}).keys.map(&:to_s)
         
-        self.class.read_inheritable_attribute(:attribute_defaults).each do |default|
-          unless attribute_keys.include?(default.attribute)
-            send("#{default.attribute}=", default.value(self))
+        if attribute_defaults = self.class.read_inheritable_attribute(:attribute_defaults)
+          attribute_defaults.each do |default|
+            unless attribute_keys.include?(default.attribute)
+              send("#{default.attribute}=", default.value(self))
+            end
           end
         end
         
