@@ -41,4 +41,15 @@ class ActiveRecordDefaultsTest < Test::Unit::TestCase
     assert_equal 'Fitzpatrick', p.last_name
     assert_equal 2, p.lucky_number
   end
+  
+  def test_defaults_from_method
+    assert_equal "Blobby", Child.new.last_name
+    assert_equal "Blobby", Child.new.first_name
+  end
+  
+  def test_default_requires_single_attribute
+    assert_raises RuntimeError do
+      Person.default :last_name => 'John'
+    end
+  end
 end

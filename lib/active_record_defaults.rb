@@ -45,6 +45,10 @@ module ActiveRecord
       #     end
       #   end
       def default(attribute, &block)
+        if attribute.is_a?(Hash)
+          raise "default should be called with a single attribute, not a hash"
+        end
+        
         defaults attribute => block
       end
     end
@@ -62,6 +66,8 @@ module ActiveRecord
             end
           end
         end
+        
+        defaults if respond_to?(:defaults)
         
         yield self if block_given?
       end

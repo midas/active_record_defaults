@@ -1,13 +1,21 @@
 Active Record Defaults
-====================
+======================
 
 Allow you to easily specify default values for attributes on new model objects. Eg:
 
-  class Person
+  class Person < ActiveRecord::Base
     defaults :country => 'New Zealand', :type => 'Unknown'
     
     default :last_name do |person|
       person.first_name
+    end
+  end
+  
+You can also define a defaults method like so:
+
+  class Person < ActiveRecord::Base
+    def defaults
+      self.first_name = "Jonathan"
     end
   end
   

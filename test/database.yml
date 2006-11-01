@@ -3,4 +3,4 @@ mysql:
   :host: localhost
   :username: rails
   :password:
-  :database: activerecord_defaults_plugin_test
+  :database: active_record_defaults_plugin_test
