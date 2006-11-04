@@ -56,9 +56,17 @@ module ActiveRecord
         
         if attribute_defaults = self.class.read_inheritable_attribute(:attribute_defaults)
           attribute_defaults.each do |default|
-            unless attribute_keys.include?(default.attribute)
-              send("#{default.attribute}=", default.value(self))
-            end
+            next if attribute_keys.include?(default.attribute)
+            
+            # Ignore a default value for association_id if association has been specified
+            reflection = self.class.reflections[default.attribute.to_sym]
+            next if reflection and reflection.macro == :belongs_to and attribute_keys.include?(reflection.primary_key_name)
+            
+            # Ignore a default value for association if association_id has been specified
+            reflection = self.class.reflections.values.find { |r| r.primary_key_name == default.attribute }
+            next if reflection and reflection.macro == :belongs_to and attribute_keys.include?(reflection.name.to_s)
+            
+            send("#{default.attribute}=", default.value(self))
           end
         end
         

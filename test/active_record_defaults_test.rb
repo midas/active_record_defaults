@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/abstract_unit'
 
 class ActiveRecordDefaultsTest < Test::Unit::TestCase
-  fixtures :people
+  fixtures :people, :schools
   
   def test_defaults_for_new_record
     p = Person.new
@@ -44,5 +44,21 @@ class ActiveRecordDefaultsTest < Test::Unit::TestCase
   
   def test_defaults_from_method
     assert_equal Date.new(2006, 10, 5), Person.new(:lucky_number => 5).birthdate
+  end
+  
+  def test_default_belongs_to_association
+    assert_equal School.find(1), PersonWithDefaultSchool.new.school
+  end
+  
+  def test_specific_belongs_to_foreign_key_value_overrides_association_default
+    assert_nil PersonWithDefaultSchool.new(:school_id => nil).school
+  end
+  
+  def test_default_belongs_to_association_by_id
+    assert_equal School.find(1), PersonWithDefaultSchoolId.new.school
+  end
+  
+  def test_specific_belong_to_association_overrides_default_foreign_key_value
+    assert_nil PersonWithDefaultSchoolId.new(:school => nil).school
   end
 end

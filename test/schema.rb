@@ -7,5 +7,11 @@ ActiveRecord::Schema.define :version => 0 do
     t.column :country,      :string
     t.column :birthdate,    :date
     t.column :lucky_number, :integer
+    t.column :type,         :string
+    t.column :school_id,    :integer
+  end
+  
+  create_table :schools, :force => true do |t|
+    t.column :name, :string
   end
 end

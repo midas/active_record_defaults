@@ -1,7 +1,7 @@
 class Person < ActiveRecord::Base
   defaults :city => 'Christchurch', :country => Proc.new { 'New Zealand' }
   
-  defaults :first_name => 'Sean'
+  default :first_name => 'Sean'
   
   default :last_name do
     'Fitzpatrick'
@@ -9,7 +9,19 @@ class Person < ActiveRecord::Base
   
   defaults :lucky_number => lambda { 2 }
   
-  default :birthdate do |person|
-    Date.new(2006, 10, person.lucky_number) if person.lucky_number?
+  def defaults
+    self.birthdate = Date.new(2006, 10, lucky_number) if lucky_number?
   end
+  
+  belongs_to :school
+end
+
+class PersonWithDefaultSchool < Person
+  default :school do
+    School.find(1)
+  end
+end
+
+class PersonWithDefaultSchoolId < Person
+  default :school_id => 1
 end
