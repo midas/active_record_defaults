@@ -9,11 +9,16 @@ module ActiveRecord
     end
     
     module ClassMethods
-      # Define default values for attributes on new records. Requires a hash of <tt>attribute => value</tt> pairs.
+      # Define default values for attributes on new records. Requires a hash of <tt>attribute => value</tt> pairs,
+      # or a single attribute with an associated block.
       # The value can be a specific object, like a string or an integer, or a Proc that returns the default value when called.
       # 
       #   class Person < ActiveRecord::Base
       #     defaults :name => 'My name', :city => Proc.new { 'My city' }
+      #     
+      #     defaults :birthdate do |person|
+      #       Date.today if person.wants_birthday_today?
+      #     end
       #   end
       #   
       # The default values are only used if the key is not present in the given attributes.
@@ -25,32 +30,22 @@ module ActiveRecord
       #   p = Person.new(:name => nil)
       #   p.name # nil
       #   p.city # "My city"
-      def defaults(attribute_values = {})
-        write_inheritable_array :attribute_defaults, attribute_values.map { |attribute, value| Default.new(attribute, value) }
-      end
-      
-      # An arguably nicer syntax for specifying a single default that is defined by a block
-      # 
-      # Instead of:
-      # 
-      #   class Person < ActiveRecord::Base
-      #     defaults :name => Proc.new { |person|
-      #       # code here
-      #     }
-      #   end
-      #   
-      #   class Person < ActiveRecord::Base
-      #     default :name do |person|
-      #       # code here
-      #     end
-      #   end
-      def default(attribute, &block)
-        if attribute.is_a?(Hash)
-          raise "default should be called with a single attribute, not a hash"
+      def defaults(defaults, &block)
+        default_objects = case
+          when defaults.is_a?(Hash)
+            defaults.map { |attribute, value| Default.new(attribute, value) }
+            
+          when defaults.is_a?(Symbol) && block
+            Default.new(defaults, block)
+            
+          else
+            raise "pass either a hash of attribute/default pairs, or a single attribute with a block"
         end
         
-        defaults attribute => block
+        write_inheritable_array :attribute_defaults, [*default_objects]
       end
+      
+      alias_method :default, :defaults
     end
     
     module InstanceMethods
