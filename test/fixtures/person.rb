@@ -13,6 +13,9 @@ class Person < ActiveRecord::Base
     self.birthdate = Date.new(2006, 10, lucky_number) if lucky_number?
   end
   
+  # Include an aggregate reflection to check compatibility
+  composed_of :address, :mapping => [%w{address_suburb suburb}, %{address_city city}]
+  
   belongs_to :school
 end
 
