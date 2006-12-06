@@ -1,6 +1,8 @@
 module ActiveRecord
   module Defaults
     def self.included(base)
+      return if base.included_modules.include?(ActiveRecord::Defaults::InstanceMethods)
+      
       base.extend ClassMethods
       base.send(:include, InstanceMethods)
       

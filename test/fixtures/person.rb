@@ -18,13 +18,3 @@ class Person < ActiveRecord::Base
   
   belongs_to :school
 end
-
-class PersonWithDefaultSchool < Person
-  default :school do
-    School.find(1)
-  end
-end
-
-class PersonWithDefaultSchoolId < Person
-  default :school_id => 1
-end

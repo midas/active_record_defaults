@@ -1,4 +1,9 @@
 require File.dirname(__FILE__) + '/abstract_unit'
+require File.dirname(__FILE__) + '/fixtures/address'
+require File.dirname(__FILE__) + '/fixtures/school'
+require File.dirname(__FILE__) + '/fixtures/person'
+require File.dirname(__FILE__) + '/fixtures/person_with_default_school_id'
+require File.dirname(__FILE__) + '/fixtures/person_with_default_school'
 
 class ActiveRecordDefaultsTest < Test::Unit::TestCase
   fixtures :people, :schools
