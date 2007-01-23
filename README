@@ -1,5 +1,10 @@
-Active Record Defaults
-======================
+= Active Record Defaults
+
+If you find this plugin useful, please consider a donation to show your support!
+
+  http://www.paypal.com/cgi-bin/webscr?cmd=_send-money&email=jonathan.viney@gmail.com
+  
+== Instructions
 
 Allow you to easily specify default values for attributes on new model objects. Eg:
 
