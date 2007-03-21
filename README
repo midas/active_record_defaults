@@ -36,7 +36,7 @@ The default value is only used if the attribute is not present in the attributes
   
 == Installation
 
-  script/plugin install http://svn.viney.net.nz/things/rails/plugins/activerecord_defaults
+  script/plugin install http://svn.viney.net.nz/things/rails/plugins/active_record_defaults
   
 == Help
 
