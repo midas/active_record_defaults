@@ -1,5 +1,12 @@
-Active Record Defaults
-======================
+= Active Record Defaults
+
+If you find this plugin useful, please consider a donation to show your support!
+
+  http://www.paypal.com/cgi-bin/webscr?cmd=_send-money
+  
+  Email address: jonathan.viney@gmail.com
+  
+== Instructions
 
 Allow you to easily specify default values for attributes on new model objects. Eg:
 
@@ -29,7 +36,7 @@ The default value is only used if the attribute is not present in the attributes
   
 == Installation
 
-  script/plugin install http://svn.viney.net.nz/things/rails/plugins/activerecord_defaults
+  script/plugin install http://svn.viney.net.nz/things/trunk/rails_plugins/active_record_defaults
   
 == Help
 

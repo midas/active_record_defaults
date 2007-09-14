@@ -11,18 +11,28 @@ module ActiveRecord
     end
     
     module ClassMethods
-      # Define default values for attributes on new records. Requires a hash of <tt>attribute => value</tt> pairs,
-      # or a single attribute with an associated block.
-      # The value can be a specific object, like a string or an integer, or a Proc that returns the default value when called.
+      # Define default values for attributes on new records. Requires a hash of <tt>attribute => value</tt> pairs, or a single attribute with an associated block.
+      # If the value is a block, it will be called to retrieve the default value.
+      # If the value is a symbol, a method by that name will be called on the object to retrieve the default value.
+      # 
+      # The following code demonstrates the different ways default values can be specified. Defaults are applied in the order they are defined.
       # 
       #   class Person < ActiveRecord::Base
-      #     defaults :name => 'My name', :city => Proc.new { 'My city' }
+      #     defaults :name => 'My name', :city => lambda { 'My city' }
       #     
-      #     defaults :birthdate do |person|
+      #     default :birthdate do |person|
       #       Date.today if person.wants_birthday_today?
       #     end
+      #     
+      #     default :favourite_colour => :default_favourite_colour
+      #     
+      #     def default_favourite_colour
+      #       "Blue"
+      #     end
       #   end
-      #   
+      # 
+      # The <tt>defaults</tt> and the <tt>default</tt> methods behave the same way. Use whichever is appropriate.
+      #
       # The default values are only used if the key is not present in the given attributes.
       # 
       #   p = Person.new
@@ -32,6 +42,25 @@ module ActiveRecord
       #   p = Person.new(:name => nil)
       #   p.name # nil
       #   p.city # "My city"
+      #
+      # == Default values for belongs_to associations
+      # 
+      # Default values can also be specified for an association. For instance:
+      #
+      #   class Student < ActiveRecord::Base
+      #     belongs_to :school
+      #     default :school => lambda { School.new }
+      #   end
+      #
+      # In this scenario, if a school_id was provided in the attributes hash, the default value for the association will be ignored:
+      #
+      #   s = Student.new
+      #   s.school # => #<School: ...>
+      # 
+      #   s = Student.new(:school_id => nil)
+      #   s.school # => nil
+      #
+      # Similarly, if a default value is specified for the foreign key and an object for the association is provided, the default foreign key is ignored.
       def defaults(defaults, &block)
         default_objects = case
           when defaults.is_a?(Hash)
@@ -41,7 +70,7 @@ module ActiveRecord
             Default.new(defaults, block)
             
           else
-            raise "pass either a hash of attribute/default pairs, or a single attribute with a block"
+            raise "pass either a hash of attribute/value pairs, or a single attribute with a block"
         end
         
         write_inheritable_array :attribute_defaults, [*default_objects]
@@ -53,8 +82,12 @@ module ActiveRecord
     module InstanceMethods
       def initialize_with_defaults(attributes = nil)
         initialize_without_defaults(attributes)
-        
-        attribute_keys = (attributes || {}).keys.map(&:to_s)
+        apply_default_attribute_values(attributes)
+        yield self if block_given?
+      end
+      
+      def apply_default_attribute_values(attributes)
+        attribute_keys = (attributes || {}).keys.map!(&:to_s)
         
         if attribute_defaults = self.class.read_inheritable_attribute(:attribute_defaults)
           attribute_defaults.each do |default|
@@ -73,8 +106,6 @@ module ActiveRecord
         end
         
         defaults if respond_to?(:defaults)
-        
-        yield self if block_given?
       end
     end
     
@@ -86,7 +117,9 @@ module ActiveRecord
       end
       
       def value(record)
-        if @value.respond_to?(:call)
+        if @value.is_a?(Symbol)
+          record.send(@value)
+        elsif @value.respond_to?(:call)
           @value.call(record)
         else
           @value

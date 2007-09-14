@@ -16,6 +16,7 @@ class ActiveRecordDefaultsTest < Test::Unit::TestCase
     assert_equal 'Sean', p.first_name
     assert_equal 'Fitzpatrick', p.last_name
     assert_equal 2, p.lucky_number
+    assert_equal 'Blue', p.favourite_colour
   end
   
   def test_default_ignored_if_key_present
@@ -27,6 +28,7 @@ class ActiveRecordDefaultsTest < Test::Unit::TestCase
     assert_equal 'New Zealand', p.country
     assert_equal 'Sean', p.first_name
     assert_equal 'Fitzpatrick', p.last_name
+    assert_equal 'Blue', p.favourite_colour
   end
   
   def test_existing_records_unchanged
@@ -45,6 +47,7 @@ class ActiveRecordDefaultsTest < Test::Unit::TestCase
     assert_equal 'Sean', p.first_name
     assert_equal 'Fitzpatrick', p.last_name
     assert_equal 2, p.lucky_number
+    assert_equal 'Blue', p.favourite_colour
   end
   
   def test_defaults_from_method
