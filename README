@@ -11,28 +11,16 @@ If you find this plugin useful, please consider a donation to show your support!
 Allow you to easily specify default values for attributes on new model objects. Eg:
 
   class Person < ActiveRecord::Base
-    defaults :country => 'New Zealand', :type => 'Unknown'
+    defaults :country => 'New Zealand', :type => 'Unknown', :address => proc { Address.new }
     
     default :last_name do |person|
       person.first_name
     end
   end
   
-You can also define a defaults method like so:
+The default value is only used if the attribute is not present in the attributes hash.
 
-  class Person < ActiveRecord::Base
-    def defaults
-      self.first_name = "Jonathan"
-    end
-  end
-  
-The default value is only used if the attribute is not present in the attributes hash:
-
-  p = Person.new
-  p.country # "New Zealand"
-  
-  p = Person.new(:country => nil)
-  p.country # nil
+See active_record_defaults.rb for full documentation.
   
 == Installation
 

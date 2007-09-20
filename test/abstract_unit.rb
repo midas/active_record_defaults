@@ -1,8 +1,7 @@
 require 'test/unit'
 
 begin
-  require File.dirname(__FILE__) + '/../../../../config/boot'
-  Rails::Initializer.run
+  require File.dirname(__FILE__) + '/../../../../config/environment'
 rescue LoadError
   require 'rubygems'
   require_gem 'activerecord'
@@ -10,11 +9,7 @@ end
 
 # Search for fixtures first
 fixture_path = File.dirname(__FILE__) + '/fixtures/'
-begin
-  Dependencies.load_paths.insert(0, fixture_path)
-rescue
-  $LOAD_PATH.unshift(fixture_path)
-end
+Dependencies.load_paths.insert(0, fixture_path)
 
 require 'active_record/fixtures'
 

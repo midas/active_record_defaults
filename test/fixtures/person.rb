@@ -1,4 +1,9 @@
 class Person < ActiveRecord::Base
+  belongs_to :school
+  
+  # Include an aggregate reflection to check compatibility
+  composed_of :address, :mapping => [%w(address_suburb suburb), %{address_city city}]
+  
   defaults :city => 'Christchurch', :country => Proc.new { 'New Zealand' }
   
   default :first_name => 'Sean'
@@ -7,18 +12,9 @@ class Person < ActiveRecord::Base
     'Fitzpatrick'
   end
   
-  defaults :lucky_number => lambda { 2 }, :favourite_colour => :default_favourite_colour
-  
-  def defaults
-    self.birthdate = Date.new(2006, 10, lucky_number) if lucky_number?
-  end
+  defaults :lucky_number => proc { 2 }, :favourite_colour => :default_favourite_colour
   
   def default_favourite_colour
-    "Blue"
+    last_name == 'Fitzpatrick' ? "Blue" : "Red"
   end
-  
-  # Include an aggregate reflection to check compatibility
-  composed_of :address, :mapping => [%w(address_suburb suburb), %{address_city city}]
-  
-  belongs_to :school
 end

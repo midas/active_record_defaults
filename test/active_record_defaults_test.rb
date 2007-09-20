@@ -1,9 +1,4 @@
 require File.dirname(__FILE__) + '/abstract_unit'
-require File.dirname(__FILE__) + '/fixtures/address'
-require File.dirname(__FILE__) + '/fixtures/school'
-require File.dirname(__FILE__) + '/fixtures/person'
-require File.dirname(__FILE__) + '/fixtures/person_with_default_school_id'
-require File.dirname(__FILE__) + '/fixtures/person_with_default_school'
 
 class ActiveRecordDefaultsTest < Test::Unit::TestCase
   fixtures :people, :schools
@@ -36,7 +31,7 @@ class ActiveRecordDefaultsTest < Test::Unit::TestCase
   end
   
   def test_default_relying_on_previous_default
-    assert_equal Date.new(2006, 10, 2), Person.new.birthdate
+    assert_equal "Red", Person.new(:last_name => 'Carter').favourite_colour
   end
   
   def test_defaults_on_create
@@ -48,10 +43,6 @@ class ActiveRecordDefaultsTest < Test::Unit::TestCase
     assert_equal 'Fitzpatrick', p.last_name
     assert_equal 2, p.lucky_number
     assert_equal 'Blue', p.favourite_colour
-  end
-  
-  def test_defaults_from_method
-    assert_equal Date.new(2006, 10, 5), Person.new(:lucky_number => 5).birthdate
   end
   
   def test_default_belongs_to_association
@@ -68,5 +59,9 @@ class ActiveRecordDefaultsTest < Test::Unit::TestCase
   
   def test_specific_belong_to_association_overrides_default_foreign_key_value
     assert_nil PersonWithDefaultSchoolId.new(:school => nil).school
+  end
+  
+  def test_initialize_model_without_any_defaults
+    assert_nothing_raised { Group.new }
   end
 end

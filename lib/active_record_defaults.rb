@@ -95,17 +95,19 @@ module ActiveRecord
             
             # Ignore a default value for association_id if association has been specified
             reflection = self.class.reflections[default.attribute.to_sym]
-            next if reflection and reflection.macro == :belongs_to and attribute_keys.include?(reflection.primary_key_name)
+            if reflection and reflection.macro == :belongs_to and attribute_keys.include?(reflection.primary_key_name)
+              next
+            end
             
             # Ignore a default value for association if association_id has been specified
             reflection = self.class.reflections.values.find { |r| r.respond_to?(:primary_key_name) && r.primary_key_name == default.attribute }
-            next if reflection and reflection.macro == :belongs_to and attribute_keys.include?(reflection.name.to_s)
+            if reflection and reflection.macro == :belongs_to and attribute_keys.include?(reflection.name.to_s)
+              next
+            end
             
             send("#{default.attribute}=", default.value(self))
           end
         end
-        
-        defaults if respond_to?(:defaults)
       end
     end
     
