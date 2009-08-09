@@ -1,5 +1,5 @@
-mysql:
-  :adapter: mysql
+sqlite:
+  :adapter: sqlite
   :host: localhost
   :username: rails
   :password:
