@@ -1,3 +1,9 @@
+[13 Nov 09]
+
+* Ported to Gem
+* Moved to Jeweler
+* Pushed to Gemcutter
+
 [20 Sep 07]
  
 * Remove ability to set defaults with defaults instance method. Too easy to override values from parameters.

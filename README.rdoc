@@ -1,3 +1,8 @@
+= Changes for this Fork
+
+* Ported to a Gem.
+
+
 = Active Record Defaults
 
 If you find this plugin useful, please consider a donation to show your support!
